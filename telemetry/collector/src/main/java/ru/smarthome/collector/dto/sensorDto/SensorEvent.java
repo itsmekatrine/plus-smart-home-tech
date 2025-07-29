@@ -29,6 +29,7 @@ public abstract class SensorEvent {
     private String id;
     @NotBlank
     private String hubId;
+    @NotNull
     private Instant timestamp = Instant.now();
 
     @NotNull

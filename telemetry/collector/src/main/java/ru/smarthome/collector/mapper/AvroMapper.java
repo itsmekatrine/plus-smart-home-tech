@@ -1,7 +1,5 @@
 package ru.smarthome.collector.mapper;
 
-
-import org.apache.avro.generic.GenericRecord;
 import org.springframework.stereotype.Component;
 import ru.smarthome.collector.dto.hubDto.HubEvent;
 import ru.smarthome.collector.dto.hubDto.DeviceAddedEvent;
@@ -11,21 +9,19 @@ import ru.smarthome.collector.dto.hubDto.ScenarioRemovedEvent;
 import ru.smarthome.collector.dto.sensorDto.*;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
-import java.util.stream.Collectors;
 
 @Component
 public class AvroMapper {
 
     // HubEvent → Avro
 
-    public GenericRecord toHubEvent(HubEvent dto) {
-        GenericRecord payload = switch (dto.getType()) {
+    public HubEventAvro toAvro(HubEvent dto) {
+        Object payload = switch (dto.getType()) {
             case DEVICE_ADDED    -> toDeviceAdded((DeviceAddedEvent) dto);
             case DEVICE_REMOVED  -> toDeviceRemoved((DeviceRemovedEvent) dto);
             case SCENARIO_ADDED  -> toScenarioAdded((ScenarioAddedEvent) dto);
             case SCENARIO_REMOVED-> toScenarioRemoved((ScenarioRemovedEvent) dto);
         };
-
 
         return HubEventAvro.newBuilder()
                 .setHubId(dto.getHubId())
@@ -34,58 +30,58 @@ public class AvroMapper {
                 .build();
     }
 
-    private DeviceAddedEventAvro toDeviceAdded(DeviceAddedEvent dto) {
+    private DeviceAddedEventAvro toDeviceAdded(DeviceAddedEvent e) {
         return DeviceAddedEventAvro.newBuilder()
-                .setId(dto.getId())
-                .setType(DeviceTypeAvro.valueOf(dto.getDeviceType().name()))
+                .setId(e.getId())
+                .setType(DeviceTypeAvro.valueOf(e.getDeviceType().name()))
                 .build();
     }
 
-    private DeviceRemovedEventAvro toDeviceRemoved(DeviceRemovedEvent dto) {
+    private DeviceRemovedEventAvro toDeviceRemoved(DeviceRemovedEvent e) {
         return DeviceRemovedEventAvro.newBuilder()
-                .setId(dto.getId())
+                .setId(e.getId())
                 .build();
     }
 
     private ScenarioAddedEventAvro toScenarioAdded(ScenarioAddedEvent dto) {
-        var avroConditions = dto.getConditions().stream()
+        var conditions = dto.getConditions().stream()
                 .map(c -> ScenarioConditionAvro.newBuilder()
                         .setSensorId(c.getSensorId())
                         .setType(ConditionTypeAvro.valueOf(c.getType().name()))
                         .setOperation(ConditionOperationAvro.valueOf(c.getOperation().name()))
                         .setValue(c.getValue())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
-        var avroActions = dto.getActions().stream()
+        var actions = dto.getActions().stream()
                 .map(a -> DeviceActionAvro.newBuilder()
                         .setSensorId(a.getSensorId())
                         .setType(ActionTypeAvro.valueOf(a.getType().name()))
-                        .setValue(a.getValue() == null ? null : a.getValue())
+                        .setValue(a.getValue())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         return ScenarioAddedEventAvro.newBuilder()
                 .setName(dto.getName())
-                .setConditions(avroConditions)
-                .setActions(avroActions)
+                .setConditions(conditions)
+                .setActions(actions)
                 .build();
     }
 
-    private ScenarioRemovedEventAvro toScenarioRemoved(ScenarioRemovedEvent dto) {
+    private ScenarioRemovedEventAvro toScenarioRemoved(ScenarioRemovedEvent e) {
         return ScenarioRemovedEventAvro.newBuilder()
-                .setName(dto.getName())
+                .setName(e.getName())
                 .build();
     }
 
 
     // SensorEvent → Avro
 
-    public GenericRecord toSensorEvent(SensorEvent dto) {
-        GenericRecord payload = switch (dto.getType()) {
+    public SensorEventAvro toAvro(SensorEvent dto) {
+        Object payload = switch (dto.getType()) {
             case LIGHT_SENSOR_EVENT    -> toLightSensor((LightSensorEvent) dto);
-            case SWITCH_SENSOR_EVENT   -> toSwitchSensor((SwitchSensorEvent) dto);
             case MOTION_SENSOR_EVENT   -> toMotionSensor((MotionSensorEvent) dto);
+            case SWITCH_SENSOR_EVENT   -> toSwitchSensor((SwitchSensorEvent) dto);
             case CLIMATE_SENSOR_EVENT  -> toClimateSensor((ClimateSensorEvent) dto);
             case TEMPERATURE_SENSOR_EVENT -> toTemperatureSensor((TemperatureSensorEvent) dto);
         };
@@ -98,16 +94,11 @@ public class AvroMapper {
                 .build();
     }
 
+
     private LightSensorAvro toLightSensor(LightSensorEvent e) {
         return LightSensorAvro.newBuilder()
                 .setLinkQuality(e.getLinkQuality())
                 .setLuminosity(e.getLuminosity())
-                .build();
-    }
-
-    private SwitchSensorAvro toSwitchSensor(SwitchSensorEvent e) {
-        return SwitchSensorAvro.newBuilder()
-                .setState(e.isState())
                 .build();
     }
 
@@ -116,6 +107,12 @@ public class AvroMapper {
                 .setLinkQuality(e.getLinkQuality())
                 .setMotion(e.isMotion())
                 .setVoltage(e.getVoltage())
+                .build();
+    }
+
+    private SwitchSensorAvro toSwitchSensor(SwitchSensorEvent e) {
+        return SwitchSensorAvro.newBuilder()
+                .setState(e.isState())
                 .build();
     }
 
@@ -129,6 +126,9 @@ public class AvroMapper {
 
     private TemperatureSensorAvro toTemperatureSensor(TemperatureSensorEvent e) {
         return TemperatureSensorAvro.newBuilder()
+                .setId(e.getId())
+                .setHubId(e.getHubId())
+                .setTimestamp(e.getTimestamp())
                 .setTemperatureC(e.getTemperatureC())
                 .setTemperatureF(e.getTemperatureF())
                 .build();

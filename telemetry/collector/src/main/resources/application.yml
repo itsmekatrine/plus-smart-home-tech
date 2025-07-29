@@ -2,6 +2,11 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
 
+    logging:
+      level:
+        org.apache.kafka.clients.producer: DEBUG
+        org.springframework.kafka.core.KafkaTemplate: DEBUG
+
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer

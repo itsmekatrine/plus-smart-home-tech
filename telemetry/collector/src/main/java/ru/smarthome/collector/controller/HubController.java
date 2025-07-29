@@ -1,6 +1,5 @@
 package ru.smarthome.collector.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.generic.GenericRecord;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.smarthome.collector.dto.hubDto.*;
 import ru.smarthome.collector.mapper.AvroMapper;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 
 @RestController
 @RequestMapping("/events/hubs")
@@ -20,10 +20,10 @@ public class HubController {
     private final AvroMapper mapper;
     private final KafkaTemplate<String, GenericRecord> kafka;
 
-    @PostMapping
+    @PostMapping("/events/hubs")
     public ResponseEntity<?> post(@RequestBody HubEvent dto) {
-        GenericRecord record = mapper.toHubEvent(dto);
-        kafka.send("telemetry.hubs.v1", record);
+        HubEventAvro avro = mapper.toAvro(dto);
+        kafka.send("telemetry.hubs.v1", avro);
         return ResponseEntity.ok().build();
     }
 }
