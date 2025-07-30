@@ -1,6 +1,11 @@
 server:
   port: 8080
 
+spring:
+  kafka:
+    admin:
+      auto-create: true
+
 collector:
   kafka:
     producer:
