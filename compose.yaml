@@ -52,8 +52,10 @@ services:
       context: ./telemetry/collector
     container_name: collector
     depends_on:
-      - kafka
-      - schema-registry
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       SPRING_KAFKA_PRODUCER_PROPERTIES_SCHEMA_REGISTRY_URL: http://schema-registry:8081
