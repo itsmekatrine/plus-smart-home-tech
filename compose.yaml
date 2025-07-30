@@ -52,13 +52,7 @@ services:
       context: ./telemetry/collector
     container_name: collector
     depends_on:
-      kafka:
-        condition: service_healthy
-      schema-registry:
-        condition: service_healthy
-    environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      SPRING_KAFKA_PRODUCER_PROPERTIES_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      - kafka
+      - schema-registry
     ports:
       - "8080:8080"
-    entrypoint: [ "./wait-for-it.sh", "schema-registry:8081", "--", "java", "-jar", "/app/app.jar" ]
