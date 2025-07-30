@@ -15,19 +15,19 @@ import org.springframework.kafka.core.ProducerFactory;
 @Slf4j
 @Configuration
 public class KafkaConfig {
-    @Value("${spring.kafka.producer.bootstrap-servers}")
+    @Value("${collector.kafka.producer.properties.bootstrap.servers}")
     String bootstrapServers;
 
-    @Value("${spring.kafka.producer.key-serializer}")
+    @Value("${collector.kafka.producer.properties.key.serializer}")
     String keySerializer;
 
-    @Value("${spring.kafka.producer.value-serializer}")
+    @Value("${collector.kafka.producer.properties.value.serializer}")
     String valueSerializer;
 
-    @Value("${spring.kafka.producer.topic.sensors}")
+    @Value("${collector.kafka.producer.topics.sensors-events}")
     String topicSensors;
 
-    @Value("${spring.kafka.producer.topic.hubs}")
+    @Value("${collector.kafka.producer.topics.hubs-events}")
     String topicHubs;
 
     @Bean
