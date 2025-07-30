@@ -12,4 +12,4 @@ spring:
       value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
 
       properties:
-        schema.registry.url: http://localhost:8081
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
