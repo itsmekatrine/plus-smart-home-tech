@@ -1,7 +1,6 @@
 package ru.smarthome.collector.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.avro.generic.GenericRecord;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +17,12 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 public class SensorController {
 
     private final AvroMapper mapper;
-    private final KafkaTemplate<String, GenericRecord> kafka;
+    private final KafkaTemplate<String, SensorEventAvro> sensorKafkaTemplate;
 
-    @PostMapping("/events/sensors")
+    @PostMapping
     public ResponseEntity<?> post(@RequestBody SensorEvent dto) {
         SensorEventAvro avro = mapper.toAvro(dto);
-        kafka.send("telemetry.sensors.v1", avro);
+        sensorKafkaTemplate.send("telemetry.sensors.v1", avro);
         return ResponseEntity.ok().build();
     }
 }

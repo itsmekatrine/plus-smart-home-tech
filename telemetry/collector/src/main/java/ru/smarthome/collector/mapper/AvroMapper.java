@@ -9,7 +9,6 @@ import ru.smarthome.collector.dto.hubDto.ScenarioRemovedEvent;
 import ru.smarthome.collector.dto.sensorDto.*;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 
-
 @Component
 public class AvroMapper {
 
