@@ -17,13 +17,6 @@
         <confluent.version>7.5.0</confluent.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>confluent</id>
-            <url>https://packages.confluent.io/maven/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
@@ -49,12 +42,6 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>kafka-avro-serializer</artifactId>
-            <version>7.5.0</version>
         </dependency>
 
         <dependency>
