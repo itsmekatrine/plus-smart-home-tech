@@ -46,8 +46,8 @@ public class AvroMapper {
         var conditions = dto.getConditions().stream()
                 .map(c -> ScenarioConditionAvro.newBuilder()
                         .setSensorId(c.getSensorId())
-                        .setType(ConditionTypeAvro.valueOf(c.getType().name()))
-                        .setOperation(ConditionOperationAvro.valueOf(c.getOperation().name()))
+                        .setType(ConditionTypeAvro.valueOf(c.getConditionType().name()))
+                        .setOperation(ConditionOperationAvro.valueOf(c.getConditionOperation().name()))
                         .setValue(c.getValue())
                         .build())
                 .toList();

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.time.Instant;
 
 @JsonTypeInfo(
@@ -18,6 +20,7 @@ import java.time.Instant;
         @JsonSubTypes.Type(value = ScenarioRemovedEvent.class,name = "SCENARIO_REMOVED")
 })
 
+@SuperBuilder(toBuilder = true)
 @Getter
 @Setter
 @ToString
