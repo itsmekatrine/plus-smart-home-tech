@@ -48,7 +48,7 @@ public class AvroMapper {
                         .setSensorId(c.getSensorId())
                         .setType(ConditionTypeAvro.valueOf(c.getConditionType().name()))
                         .setOperation(ConditionOperationAvro.valueOf(c.getConditionOperation().name()))
-                        .setValue(c.getValue())
+                        .setValue(Integer.valueOf(c.getValue()))
                         .build())
                 .toList();
 

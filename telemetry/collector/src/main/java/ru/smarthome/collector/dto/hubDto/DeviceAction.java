@@ -14,10 +14,10 @@ import lombok.experimental.SuperBuilder;
 public class DeviceAction {
 
     @NotBlank
-    String sensorId;
+    private String sensorId;
 
     @NotNull
-    ActionType type;
+    private ActionType type;
 
-    Integer value;
+    private Integer value;
 }

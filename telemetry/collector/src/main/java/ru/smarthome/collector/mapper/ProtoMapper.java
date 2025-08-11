@@ -1,6 +1,5 @@
 package ru.smarthome.collector.mapper;
 
-import com.google.protobuf.Timestamp;
 import org.springframework.stereotype.Component;
 import ru.smarthome.collector.dto.hubDto.*;
 import ru.smarthome.collector.dto.hubDto.HubEvent;
@@ -9,7 +8,6 @@ import ru.smarthome.collector.dto.sensorDto.*;
 import ru.yandex.practicum.grpc.telemetry.event.*;
 
 import java.time.Instant;
-import java.util.stream.Collectors;
 
 @Component
 public class ProtoMapper {
@@ -51,8 +49,8 @@ public class ProtoMapper {
                 .hubId(proto.getHubId())
                 .timestamp(Instant.ofEpochSecond(proto.getTimestamp().getSeconds(), proto.getTimestamp().getNanos()))
                 .name(p.getName())
-                .conditions(p.getConditionList().stream().map(this::toCondition).collect(Collectors.toList()))
-                .actions(p.getActionList().stream().map(this::toAction).collect(Collectors.toList()))
+                .conditions(p.getConditionList().stream().map(this::toCondition).toList())
+                .actions(p.getActionList().stream().map(this::toAction).toList())
                 .build();
     }
 
@@ -74,11 +72,17 @@ public class ProtoMapper {
     }
 
     private ScenarioCondition toCondition(ScenarioConditionProto p) {
+        int value = switch (p.getValueCase()) {
+            case INT_VALUE   -> p.getIntValue();
+            case BOOL_VALUE  -> p.getBoolValue() ? 1 : 0;
+            case VALUE_NOT_SET -> 0;
+        };
+
         return ScenarioCondition.builder()
                 .sensorId(p.getSensorId())
                 .conditionType(ConditionType.valueOf(p.getType().name()))
                 .conditionOperation(ConditionOperation.valueOf(p.getOperation().name()))
-                .value(p.hasIntValue() ? p.getIntValue() : null)
+                .value(value)
                 .build();
     }
 

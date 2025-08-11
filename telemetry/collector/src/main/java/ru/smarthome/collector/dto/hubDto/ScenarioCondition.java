@@ -14,14 +14,13 @@ import lombok.experimental.SuperBuilder;
 public class ScenarioCondition {
 
     @NotBlank
-    String sensorId;
+    private String sensorId;
 
     @NotNull
-    ConditionType conditionType;
+    private ConditionType conditionType;
 
     @NotNull
-    ConditionOperation conditionOperation;
+    private ConditionOperation conditionOperation;
 
-    @NotNull
-    Integer value;
+    private Integer value;
 }
