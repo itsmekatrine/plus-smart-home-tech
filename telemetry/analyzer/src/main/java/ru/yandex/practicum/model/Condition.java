@@ -29,7 +29,7 @@ public class Condition {
     @Column(nullable = false)
     private ConditionOperation operation;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "value")
     private Integer value;
 
     @ManyToMany(mappedBy = "conditions")
