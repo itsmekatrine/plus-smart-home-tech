@@ -17,7 +17,7 @@ public class Scenario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "hub_id")
+    @Column(name = "hub_id", nullable = false)
     private String hubId;
     private String name;
 
@@ -25,7 +25,7 @@ public class Scenario {
     @JoinTable(
             name = "scenario_conditions",
             joinColumns = @JoinColumn(name = "scenario_id"),
-            inverseJoinColumns = @JoinColumn(name = "condition_id")
+            inverseJoinColumns = @JoinColumn(name = "condition_id", nullable = false)
     )
     private List<Condition> conditions;
 
@@ -33,7 +33,7 @@ public class Scenario {
     @JoinTable(
             name = "scenario_actions",
             joinColumns = @JoinColumn(name = "scenario_id"),
-            inverseJoinColumns = @JoinColumn(name = "action_id")
+            inverseJoinColumns = @JoinColumn(name = "action_id", nullable = false)
     )
     private List<Action> actions;
 }

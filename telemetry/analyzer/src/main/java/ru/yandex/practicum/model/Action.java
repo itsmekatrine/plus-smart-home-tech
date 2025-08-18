@@ -18,13 +18,14 @@ public class Action {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "sensor_id")
+    @JoinColumn(name = "sensor_id", nullable = false)
     private Sensor sensor;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ActionType type;
 
-    @Column(name = "value")
+    @Column(name = "value", nullable = false)
     private Integer value;
 
     @ManyToMany(mappedBy = "actions")

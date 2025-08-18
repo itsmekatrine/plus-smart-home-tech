@@ -49,23 +49,6 @@ public class EntityMapper {
     }
 
     public static Action mapToAction(Scenario scenario, DeviceActionAvro actionAvro) {
-        if (actionAvro.getSensorId() == null || actionAvro.getSensorId().isBlank()) {
-            throw new IllegalArgumentException("DeviceActionAvro.sensorId is null");
-        }
-        if (scenario.getHubId() == null || scenario.getHubId().isBlank()) {
-            throw new IllegalArgumentException("Scenario.hubId is null");
-        }
-
-        Integer value = actionAvro.getValue();
-        if (value == null) {
-            switch (actionAvro.getType()) {
-                case ACTIVATE -> value = 1;
-                case DEACTIVATE -> value = 0;
-                default -> throw new IllegalArgumentException(
-                        "Action value is required for type=" + actionAvro.getType() + ", sensorId=" + actionAvro.getSensorId());
-            }
-        }
-
         return Action.builder()
                 .sensor(new Sensor(actionAvro.getSensorId(), scenario.getHubId()))
                 .type(toActionType(actionAvro.getType()))
@@ -101,22 +84,6 @@ public class EntityMapper {
     // Entity → Protobuf
 
     public static DeviceActionProto actionToProto(Action action) {
-        if (action.getValue() == null) {
-            throw new IllegalStateException("Action.value is null, actionId=" + action.getId());
-        }
-        if (action.getSensor() == null) {
-            throw new IllegalStateException("Action.sensor is null, actionId=" + action.getId());
-        }
-        if (action.getSensor().getId() == null || action.getSensor().getId().isBlank()) {
-            throw new IllegalStateException("Sensor.id is null/blank for actionId=" + action.getId());
-        }
-        if (action.getSensor().getHubId() == null || action.getSensor().getHubId().isBlank()) {
-            throw new IllegalStateException("Sensor.hubId is null/blank for actionId=" + action.getId());
-        }
-        if (action.getType() == null) {
-            throw new IllegalStateException("Action.type is null for actionId=" + action.getId());
-        }
-
         return DeviceActionProto.newBuilder()
                 .setSensorId(action.getSensor().getId())
                 .setType(toActionTypeProto(action.getType()))

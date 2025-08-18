@@ -17,6 +17,6 @@ public class Sensor {
     @Id
     private String id;
 
-    @Column(name = "hub_id")
+    @Column(name = "hub_id", nullable = false)
     private String hubId;
 }
