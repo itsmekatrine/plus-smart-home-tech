@@ -62,8 +62,8 @@ public class EntityMapper {
         }
         return Action.builder()
                 .sensor(new Sensor(actionAvro.getSensorId(), scenario.getHubId()))
-                .type(toActionType(actionAvro.getType()))
-                .value(actionAvro.getValue())
+                .type(type)
+                .value(val)
                 .build();
     }
 
@@ -114,7 +114,7 @@ public class EntityMapper {
         return DeviceActionProto.newBuilder()
                 .setSensorId(action.getSensor().getId())
                 .setType(toActionTypeProto(action.getType()))
-                .setValue(action.getValue())
+                .setValue(val)
                 .build();
     }
 
@@ -131,11 +131,15 @@ public class EntityMapper {
         return switch (type) {
             case ACTIVATE -> 1;
             case DEACTIVATE -> 0;
-            case INVERSE, SET_VALUE -> null;
+            case INVERSE -> 1;
+            case SET_VALUE -> null;
         };
     }
 
     private static boolean typeRequiresValue(ActionType type) {
-        return type == ActionType.SET_VALUE;
+        return switch (type) {
+            case SET_VALUE -> true;
+            default -> false;
+        };
     }
 }
