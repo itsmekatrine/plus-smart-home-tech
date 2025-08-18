@@ -10,18 +10,20 @@ spring:
     show-sql: true
     properties:
       hibernate.format_sql: true
+  sql:
+    init:
+      mode: always
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
       group-id: analyzer
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: ru.yandex.practicum.kafka.SensorEventDeserializer
       properties:
         specific.avro.reader: true
     producer:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: ru.yandex.practicum.kafka.GeneralAvroSerializer
+      value-serializer: ru.yandex.practicum.kafka.serialization.GeneralAvroSerializer
       properties:
         specific.avro.reader: true
 
@@ -32,11 +34,14 @@ app:
       sensor-snapshots: telemetry.snapshots.v1
     consumer:
       attempt-timeout: 1000
+    deserializers:
+      hub-events: ru.yandex.practicum.kafka.deserialization.HubEventDeserializer
+      sensor-snapshots: ru.yandex.practicum.kafka.deserialization.SensorSnapshotDeserializer
 
 grpc:
   client:
     hub-router:
-      address: ${HUB_ROUTER_ADDRESS:static://localhost:59090}
+      address: static://localhost:59090
       enableKeepAlive: true
       keepAliveWithoutCalls: true
       negotiationType: plaintext

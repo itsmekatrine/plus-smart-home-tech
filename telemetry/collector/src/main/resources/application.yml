@@ -17,4 +17,4 @@ collector:
       properties:
         bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
         key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        value.serializer: ru.yandex.practicum.kafka.GeneralAvroSerializer
+        value.serializer: ru.yandex.practicum.kafka.serialization.GeneralAvroSerializer
