@@ -49,15 +49,21 @@ public class EntityMapper {
     }
 
     public static Action mapToAction(Scenario scenario, DeviceActionAvro actionAvro) {
-        if (actionAvro.getValue() == null) {
-            throw new IllegalArgumentException(
-                    "Action value is null (type=" + actionAvro.getType() + ", sensorId=" + actionAvro.getSensorId() + ")");
-        }
         if (actionAvro.getSensorId() == null || actionAvro.getSensorId().isBlank()) {
-            throw new IllegalArgumentException("DeviceActionAvro.sensorId is null/blank");
+            throw new IllegalArgumentException("DeviceActionAvro.sensorId is null");
         }
         if (scenario.getHubId() == null || scenario.getHubId().isBlank()) {
-            throw new IllegalArgumentException("Scenario.hubId is null/blank");
+            throw new IllegalArgumentException("Scenario.hubId is null");
+        }
+
+        Integer value = actionAvro.getValue();
+        if (value == null) {
+            switch (actionAvro.getType()) {
+                case ACTIVATE -> value = 1;
+                case DEACTIVATE -> value = 0;
+                default -> throw new IllegalArgumentException(
+                        "Action value is required for type=" + actionAvro.getType() + ", sensorId=" + actionAvro.getSensorId());
+            }
         }
 
         return Action.builder()
