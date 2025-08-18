@@ -49,6 +49,17 @@ public class EntityMapper {
     }
 
     public static Action mapToAction(Scenario scenario, DeviceActionAvro actionAvro) {
+        var type = toActionType(actionAvro.getType());
+        Integer val = actionAvro.getValue();
+
+        if (val == null && typeRequiresValue(type)) {
+            throw new IllegalArgumentException(
+                    "Action value is required for type=" + type + " (sensorId=" + actionAvro.getSensorId() + ")"
+            );
+        }
+        if (val == null) {
+            val = defaultValueFor(type);
+        }
         return Action.builder()
                 .sensor(new Sensor(actionAvro.getSensorId(), scenario.getHubId()))
                 .type(toActionType(actionAvro.getType()))
@@ -84,6 +95,22 @@ public class EntityMapper {
     // Entity → Protobuf
 
     public static DeviceActionProto actionToProto(Action action) {
+        var type = action.getType();
+        Integer val = action.getValue();
+
+        if (val == null) {
+            val = defaultValueFor(type);
+        }
+        if (val == null && typeRequiresValue(type)) {
+            throw new IllegalStateException(
+                    "Action.value is missing for type=" + type + ", actionId=" + action.getId()
+            );
+        }
+
+        if (val == null) {
+            val = 0;
+        }
+
         return DeviceActionProto.newBuilder()
                 .setSensorId(action.getSensor().getId())
                 .setType(toActionTypeProto(action.getType()))
@@ -98,5 +125,17 @@ public class EntityMapper {
             case INVERSE -> ActionTypeProto.INVERSE;
             case SET_VALUE -> ActionTypeProto.SET_VALUE;
         };
+    }
+
+    private static Integer defaultValueFor(ActionType type) {
+        return switch (type) {
+            case ACTIVATE -> 1;
+            case DEACTIVATE -> 0;
+            case INVERSE, SET_VALUE -> null;
+        };
+    }
+
+    private static boolean typeRequiresValue(ActionType type) {
+        return type == ActionType.SET_VALUE;
     }
 }

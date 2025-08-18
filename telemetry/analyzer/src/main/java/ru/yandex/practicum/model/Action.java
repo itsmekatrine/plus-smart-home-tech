@@ -25,7 +25,7 @@ public class Action {
     @Column(nullable = false)
     private ActionType type;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "value")
     private Integer value;
 
     @ManyToMany(mappedBy = "actions")
