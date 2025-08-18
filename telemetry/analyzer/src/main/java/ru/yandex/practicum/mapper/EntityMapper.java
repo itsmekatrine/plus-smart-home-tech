@@ -98,6 +98,10 @@ public class EntityMapper {
         var type = action.getType();
         Integer val = action.getValue();
 
+        if (type == ActionType.INVERSE) {
+            val = 0;
+        }
+
         if (val == null) {
             val = defaultValueFor(type);
         }
@@ -106,7 +110,6 @@ public class EntityMapper {
                     "Action.value is missing for type=" + type + ", actionId=" + action.getId()
             );
         }
-
         if (val == null) {
             val = 0;
         }
@@ -131,7 +134,7 @@ public class EntityMapper {
         return switch (type) {
             case ACTIVATE -> 1;
             case DEACTIVATE -> 0;
-            case INVERSE -> 1;
+            case INVERSE -> 0;
             case SET_VALUE -> null;
         };
     }
