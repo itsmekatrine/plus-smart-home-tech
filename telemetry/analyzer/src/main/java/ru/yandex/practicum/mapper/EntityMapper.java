@@ -52,14 +52,16 @@ public class EntityMapper {
         var type = toActionType(actionAvro.getType());
         Integer val = actionAvro.getValue();
 
-        if (val == null && typeRequiresValue(type)) {
-            throw new IllegalArgumentException(
-                    "Action value is required for type=" + type + " (sensorId=" + actionAvro.getSensorId() + ")"
-            );
+        if (type == ActionType.SET_VALUE) {
+            if (val == null) {
+                throw new IllegalArgumentException(
+                        "Action value is required for type=SET_VALUE (sensorId=" + actionAvro.getSensorId() + ")"
+                );
+            }
+        } else {
+            val = null;
         }
-        if (val == null) {
-            val = defaultValueFor(type);
-        }
+
         return Action.builder()
                 .sensor(new Sensor(actionAvro.getSensorId(), scenario.getHubId()))
                 .type(type)
@@ -98,25 +100,19 @@ public class EntityMapper {
         var type = action.getType();
         Integer val = action.getValue();
 
-        if (type == ActionType.INVERSE) {
+        if (type != ActionType.SET_VALUE) {
             val = 0;
-        }
-
-        if (val == null) {
-            val = defaultValueFor(type);
-        }
-        if (val == null && typeRequiresValue(type)) {
-            throw new IllegalStateException(
-                    "Action.value is missing for type=" + type + ", actionId=" + action.getId()
-            );
-        }
-        if (val == null) {
-            val = 0;
+        } else {
+            if (val == null) {
+                throw new IllegalStateException(
+                        "Action.value is missing for type=SET_VALUE, actionId=" + action.getId()
+                );
+            }
         }
 
         return DeviceActionProto.newBuilder()
                 .setSensorId(action.getSensor().getId())
-                .setType(toActionTypeProto(action.getType()))
+                .setType(toActionTypeProto(type))
                 .setValue(val)
                 .build();
     }
@@ -132,7 +128,7 @@ public class EntityMapper {
 
     private static Integer defaultValueFor(ActionType type) {
         return switch (type) {
-            case ACTIVATE -> 1;
+            case ACTIVATE -> 0;
             case DEACTIVATE -> 0;
             case INVERSE -> 0;
             case SET_VALUE -> null;
