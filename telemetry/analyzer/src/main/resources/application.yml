@@ -36,7 +36,7 @@ app:
 grpc:
   client:
     hub-router:
-      address: static://localhost:59090
+      address: ${HUB_ROUTER_ADDRESS:static://localhost:59090}
       enableKeepAlive: true
       keepAliveWithoutCalls: true
       negotiationType: plaintext
