@@ -1,5 +1,9 @@
 server:
   port: 8080
+grpc:
+  server:
+    port: 59091
+    reflectionServiceEnabled: true
 
 spring:
   kafka:
