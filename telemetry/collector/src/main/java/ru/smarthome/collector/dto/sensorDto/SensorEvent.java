@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.time.Instant;
 
 @JsonTypeInfo(
@@ -21,6 +23,7 @@ import java.time.Instant;
         @JsonSubTypes.Type(value = SwitchSensorEvent.class,  name = "SWITCH_SENSOR_EVENT")
 })
 
+@SuperBuilder(toBuilder = true)
 @Getter
 @Setter
 @ToString

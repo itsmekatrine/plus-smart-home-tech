@@ -1,31 +1,51 @@
 package ru.smarthome.collector.controller;
 
-import jakarta.validation.Valid;
+import com.google.protobuf.Empty;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.smarthome.collector.dto.hubDto.HubEvent;
-import ru.smarthome.collector.dto.sensorDto.SensorEvent;
+import lombok.extern.slf4j.Slf4j;
+import net.devh.boot.grpc.server.service.GrpcService;
+import ru.smarthome.collector.mapper.ProtoMapper;
 import ru.smarthome.collector.service.CollectorService;
+import ru.yandex.practicum.grpc.telemetry.collector.CollectorControllerGrpc;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
-@RestController
-@RequestMapping("/events")
+@Slf4j
+@GrpcService
 @RequiredArgsConstructor
-public class CollectorController {
-    private final CollectorService service;
+public class CollectorController extends CollectorControllerGrpc.CollectorControllerImplBase {
 
-    @PostMapping("/sensors")
-    public ResponseEntity<Void> collectSensorEvent(@Valid @RequestBody SensorEvent event) {
-        service.collectSensorEvent(event);
-        return ResponseEntity.accepted().build();
+    private final CollectorService service;
+    private final ProtoMapper mapper;
+
+    @Override
+    public void collectSensorEvent(SensorEventProto request, StreamObserver<Empty> responseObserver) {
+        try {
+            log.info("Sensor event collect request: {}", request);
+            var dto = mapper.toDomain(request);
+            service.collectSensorEvent(dto);
+            responseObserver.onNext(Empty.getDefaultInstance());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()).withCause(e)));
+        }
     }
 
-    @PostMapping("/hubs")
-    public ResponseEntity<Void> collectHubEvent(@RequestBody HubEvent event) {
-        service.collectHubEvent(event);
-        return ResponseEntity.accepted().build();
+    @Override
+    public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
+        try {
+            log.info("Hub event collect request: {}", request);
+            var dto = mapper.toDomain(request);
+            service.collectHubEvent(dto);
+            responseObserver.onNext(Empty.getDefaultInstance());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(new StatusRuntimeException(
+                    Status.INTERNAL.withDescription(e.getMessage()).withCause(e)
+            ));
+        }
     }
 }

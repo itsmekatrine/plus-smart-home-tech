@@ -1,5 +1,9 @@
 server:
   port: 8080
+grpc:
+  server:
+    port: 59091
+    reflectionServiceEnabled: true
 
 spring:
   kafka:
@@ -17,4 +21,4 @@ collector:
       properties:
         bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
         key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        value.serializer: ru.yandex.practicum.kafka.GeneralAvroSerializer
+        value.serializer: ru.yandex.practicum.kafka.serialization.GeneralAvroSerializer
