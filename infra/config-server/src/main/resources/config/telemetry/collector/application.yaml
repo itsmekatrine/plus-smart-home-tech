@@ -1,0 +1,24 @@
+server:
+  port: 8080
+grpc:
+  server:
+    port: 59091
+    reflectionServiceEnabled: true
+
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    admin:
+      auto-create: true
+
+collector:
+  kafka:
+    producer:
+      topics:
+        sensors-events: telemetry.sensors.v1
+        hubs-events: telemetry.hubs.v1
+      properties:
+        bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: ru.yandex.practicum.kafka.serialization.GeneralAvroSerializer

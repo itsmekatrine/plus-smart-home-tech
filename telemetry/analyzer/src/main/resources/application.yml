@@ -1,47 +1,11 @@
 spring:
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/analyzer
-    username: analyzer
-    password: analyzer
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    properties:
-      hibernate.format_sql: true
-  sql:
-    init:
-      mode: always
-  kafka:
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: analyzer
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      properties:
-        specific.avro.reader: true
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: ru.yandex.practicum.kafka.serialization.GeneralAvroSerializer
-      properties:
-        specific.avro.reader: true
-
-app:
-  kafka:
-    topics:
-      hub-events: telemetry.hubs.v1
-      sensor-snapshots: telemetry.snapshots.v1
-    consumer:
-      attempt-timeout: 1000
-    deserializers:
-      hub-events: ru.yandex.practicum.kafka.deserialization.HubEventDeserializer
-      sensor-snapshots: ru.yandex.practicum.kafka.deserialization.SensorSnapshotDeserializer
-
-grpc:
-  client:
-    hub-router:
-      address: static://localhost:59090
-      enableKeepAlive: true
-      keepAliveWithoutCalls: true
-      negotiationType: plaintext
+  application:
+    name: analyzer
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
