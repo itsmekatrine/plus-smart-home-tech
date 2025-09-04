@@ -1,6 +1,5 @@
 package ru.yandex.practicum.service;
 
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +10,7 @@ import ru.yandex.practicum.dto.store.ProductCategory;
 import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.dto.store.ProductState;
 import ru.yandex.practicum.dto.store.SetProductQuantityStateRequest;
+import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.model.Product;
 import ru.yandex.practicum.repository.ProductRepository;

@@ -1,12 +1,12 @@
 package ru.yandex.practicum.service;
 
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.client.WarehouseClient;
 import ru.yandex.practicum.dto.cart.CartDto;
 import ru.yandex.practicum.dto.cart.UpdateProductQuantityRequest;
+import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.mapper.ShoppingCartMapper;
 import ru.yandex.practicum.model.ShoppingCart;
 import ru.yandex.practicum.repository.ShoppingCartRepository;
