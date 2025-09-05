@@ -51,7 +51,7 @@ public class ProductController implements StoreClient {
     }
 
     @Override
-    @PostMapping("/setProductQuantityState")
+    @PostMapping("/quantityState")
     public boolean setProductQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request) {
         return service.setQuantityState(request);
     }
