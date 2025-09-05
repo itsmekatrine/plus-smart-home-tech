@@ -1,11 +1,14 @@
 package ru.yandex.practicum.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.dto.store.ProductCategory;
 import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.dto.store.ProductState;
@@ -20,6 +23,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@Validated
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
@@ -39,18 +43,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto getProductById(UUID productId) {
+    public ProductDto getProductById(@NotNull UUID productId) {
         return mapper.toDto(findProductById(productId));
     }
 
     @Override
-    public ProductDto createNewProduct(ProductDto productDto) {
+    public ProductDto createNewProduct(@Valid @NotNull ProductDto productDto) {
         Product product = mapper.toEntity(productDto);
         return mapper.toDto(repository.save(product));
     }
 
     @Override
-    public ProductDto updateProduct(ProductDto productDto) {
+    public ProductDto updateProduct(@Valid @NotNull ProductDto productDto) {
         findProductById(productDto.getProductId());
         return mapper.toDto(repository.save(mapper.toEntity(productDto)));
     }
@@ -67,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean removeProductFromStore(UUID productId) {
+    public boolean removeProductFromStore(@NotNull UUID productId) {
         Product product = findProductById(productId);
 
         if (product.getProductState() == ProductState.DEACTIVATE) {

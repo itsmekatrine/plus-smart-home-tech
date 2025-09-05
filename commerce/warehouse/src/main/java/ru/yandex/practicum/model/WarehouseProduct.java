@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "warehouse_products")
+@Table(name = "warehouse_product")
 public class WarehouseProduct {
     @Id
     @Column(name = "product_id", nullable = false, unique = true)

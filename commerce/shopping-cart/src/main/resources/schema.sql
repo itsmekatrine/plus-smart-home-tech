@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS cart (
     cart_id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_name        varchar(200) NOT NULL
+    username        varchar(200) NOT NULL,
+    is_active boolean DEFAULT true
 );
 
 CREATE TABLE IF NOT EXISTS cart_products (

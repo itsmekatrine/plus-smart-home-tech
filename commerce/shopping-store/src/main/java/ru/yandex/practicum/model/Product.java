@@ -15,7 +15,7 @@ import java.util.UUID;
 @Table(name = "products")
 public class Product {
     @Id
-    @Column(name = "id")
+    @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID productId;
 
@@ -36,8 +36,11 @@ public class Product {
     @Column(name = "product_state", length = 50, nullable = false)
     private ProductState productState;
 
+    @Column(name = "rating")
+    private Double rating;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "product_category", length = 50, nullable = false)
+    @Column(name = "category", length = 50, nullable = false)
     private ProductCategory productCategory;
 
     @Column(name = "price")

@@ -11,10 +11,10 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "shopping_carts")
+@Table(name = "cart")
 public class ShoppingCart {
     @Id
-    @Column(name = "id")
+    @Column(name = "cart_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID shoppingCartId;
 
@@ -24,7 +24,7 @@ public class ShoppingCart {
     @ElementCollection
     @Column(name = "quantity")
     @MapKeyColumn(name = "product_id")
-    @CollectionTable(name = "cart_items", joinColumns = @JoinColumn(name = "cart_id"))
+    @CollectionTable(name="cart_products", joinColumns = @JoinColumn(name = "cart_id"))
     private Map<UUID, Long> products = new HashMap<>();
 
     @Column(name = "is_active")

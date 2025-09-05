@@ -1,8 +1,11 @@
 package ru.yandex.practicum.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.dto.cart.CartDto;
 import ru.yandex.practicum.dto.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.warehouse.AddressDto;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Validated
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
     private final WarehouseRepository repository;
@@ -35,7 +39,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             ADDRESSES[Random.from(new SecureRandom()).nextInt(0, 1)];
 
     @Override
-    public void newProductInWarehouse(NewProductInWarehouseRequest request) {
+    public void newProductInWarehouse(@Valid @NotNull NewProductInWarehouseRequest request) {
         if (repository.existsById(request.getProductId())) {
             throw new AlreadyExistsException("Product `%s` already exists in warehouse".formatted(request.getProductId()));
         }
@@ -43,14 +47,14 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public void addProductToWarehouse(AddProductToWarehouseRequest request) {
+    public void addProductToWarehouse(@Valid @NotNull AddProductToWarehouseRequest request) {
         WarehouseProduct product = findProductById(request.getProductId());
         product.setQuantity(product.getQuantity() + request.getQuantity());
         repository.save(product);
     }
 
     @Override
-    public OrderDto checkProductQuantity(CartDto shoppingCart) {
+    public OrderDto checkProductQuantity(@Valid @NotNull CartDto shoppingCart) {
         if (shoppingCart == null || shoppingCart.getProducts() == null || shoppingCart.getProducts().isEmpty()) {
             return new OrderDto(0.0, 0.0, false);
         }

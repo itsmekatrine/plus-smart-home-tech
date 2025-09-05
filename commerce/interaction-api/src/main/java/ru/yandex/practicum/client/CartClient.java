@@ -15,19 +15,17 @@ import java.util.UUID;
 public interface CartClient {
 
     @GetMapping
-    CartDto getShoppingCart(@RequestParam(name = "username") @NotBlank String userName);
+    CartDto getShoppingCart(@RequestParam(name = "username") String userName);
 
     @PutMapping
-    CartDto addProductToShoppingCart(@RequestParam(name = "username") @NotBlank String userName,
-                                      @RequestBody Map<UUID, Long> products);
+    CartDto addProductToShoppingCart(@RequestParam(name = "username") String userName, @RequestBody Map<UUID, Long> products);
 
     @DeleteMapping
-    void deleteShoppingCart(@RequestParam(name = "username") @NotBlank String userName);
+    void deleteShoppingCart(@RequestParam(name = "username") String userName);
 
     @PostMapping("/remove")
-    CartDto removeFromShoppingCart(@RequestParam(name = "username") @NotBlank String userName, @RequestBody List<UUID> products);
+    CartDto removeFromShoppingCart(@RequestParam(name = "username") String userName, @RequestBody List<UUID> products);
 
     @PostMapping("/change-quantity")
-    CartDto changeProductQuantity(@RequestParam(name = "username") @NotBlank String userName,
-                                  @RequestBody @Valid UpdateProductQuantityRequest request);
+    CartDto changeProductQuantity(@RequestParam(name = "username") String userName, @RequestBody UpdateProductQuantityRequest request);
 }
