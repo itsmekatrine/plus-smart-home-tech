@@ -22,7 +22,7 @@ public class ProductController implements StoreClient {
 
     @Override
     @GetMapping
-    public List<ProductDto> getProducts(@NotNull ProductCategory category, Pageable pageable) {
+    public List<ProductDto> getProducts(@RequestParam @NotNull ProductCategory category, Pageable pageable) {
         return service.getProducts(category, pageable);
     }
 

@@ -29,6 +29,6 @@ public interface StoreClient {
     @PostMapping("/removeProductFromStore")
     boolean removeProductFromStore(@RequestBody UUID productId);
 
-    @PostMapping("/quantityState")
-    boolean setProductQuantityState(SetProductQuantityStateRequest request);
+    @PostMapping("/setProductQuantityState")
+    boolean setProductQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request);
 }
