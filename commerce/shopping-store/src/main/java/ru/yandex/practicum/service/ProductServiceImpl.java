@@ -1,6 +1,7 @@
 package ru.yandex.practicum.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,7 +17,6 @@ import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.model.Product;
 import ru.yandex.practicum.repository.ProductRepository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,15 +29,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public List<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
+    public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
         Pageable p = pageable.getSort().isSorted()
                 ? pageable
                 : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("productName"));
 
         return repository
                 .findAllByProductCategoryAndProductState(category, ProductState.ACTIVE, p)
-                .map(mapper::toDto)
-                .getContent();
+                .map(mapper::toDto);
     }
 
     @Override

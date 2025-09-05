@@ -1,11 +1,11 @@
 package ru.yandex.practicum.service;
 
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.dto.store.ProductCategory;
@@ -13,7 +13,7 @@ import ru.yandex.practicum.dto.store.SetProductQuantityStateRequest;
 
 public interface ProductService {
 
-    List<ProductDto> getProducts(@Nullable ProductCategory category, Pageable pageable);
+    Page<ProductDto> getProducts(@Nullable ProductCategory category, Pageable pageable);
 
     ProductDto getProductById(@NotNull UUID productId);
 
