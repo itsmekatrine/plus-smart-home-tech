@@ -1,8 +1,5 @@
 package ru.yandex.practicum.service;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +32,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public CartDto addProductToShoppingCart(@NotBlank String username, @NotEmpty Map<UUID, Long> products) {
+    public CartDto addProductToShoppingCart(String username, Map<UUID, Long> products) {
         ShoppingCart shoppingCart = getOrElseCreateShoppingCart(username);
         updateCartProducts(shoppingCart, products);
         warehouseClient.checkProductQuantity(mapper.toDto(shoppingCart));
@@ -43,7 +40,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public CartDto removeFromShoppingCart(@NotBlank String username, @NotEmpty List<UUID> products) {
+    public CartDto removeFromShoppingCart(String username, List<UUID> products) {
         ShoppingCart shoppingCart = findCartByUsername(username);
 
         for (UUID product : products) {
@@ -53,7 +50,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public CartDto changeProductQuantity(@NotBlank String username, @Valid UpdateProductQuantityRequest request) {
+    public CartDto changeProductQuantity(String username, UpdateProductQuantityRequest request) {
         ShoppingCart shoppingCart = findCartByUsername(username);
         if (!shoppingCart.getProducts().containsKey(request.getProductId())) {
             throw new NotFoundException("Product `%s` not found in cart".formatted(request.getProductId()));

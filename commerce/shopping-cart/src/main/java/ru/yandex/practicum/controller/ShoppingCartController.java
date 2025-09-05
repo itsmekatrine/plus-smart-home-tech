@@ -1,12 +1,8 @@
 package ru.yandex.practicum.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.client.CartClient;
 import ru.yandex.practicum.dto.cart.CartDto;
 import ru.yandex.practicum.dto.cart.UpdateProductQuantityRequest;
@@ -23,27 +19,33 @@ public class ShoppingCartController implements CartClient {
     private final ShoppingCartService service;
 
     @Override
-    public CartDto getShoppingCart(@RequestParam String username) {
+    @GetMapping
+    public CartDto getShoppingCart(@RequestParam(name = "username") String username) {
         return service.getShoppingCart(username);
     }
 
     @Override
-    public CartDto addProductToShoppingCart(@RequestParam String username, Map<UUID, @NotNull Long> products) {
+    @PutMapping
+    public CartDto addProductToShoppingCart(@RequestParam(name = "username") String username, @RequestBody Map<UUID, Long> products) {
         return service.addProductToShoppingCart(username, products);
     }
 
     @Override
-    public CartDto removeFromShoppingCart(@RequestParam String username, @RequestBody List<UUID> products) {
+    @PostMapping("/remove")
+    public CartDto removeFromShoppingCart(@RequestParam(name = "username") String username, @RequestBody List<UUID> products) {
         return service.removeFromShoppingCart(username, products);
     }
 
     @Override
-    public CartDto changeProductQuantity(@RequestParam String username, @Valid @RequestBody UpdateProductQuantityRequest request) {
+    @PostMapping("/change-quantity")
+    public CartDto changeProductQuantity(@RequestParam(name = "username") String username,
+                                         @Valid @RequestBody UpdateProductQuantityRequest request) {
         return service.changeProductQuantity(username, request);
     }
 
     @Override
-    public void deleteShoppingCart(@RequestParam String username) {
+    @DeleteMapping
+    public void deleteShoppingCart(@RequestParam(name = "username") String username) {
         service.deleteShoppingCart(username);
     }
 }

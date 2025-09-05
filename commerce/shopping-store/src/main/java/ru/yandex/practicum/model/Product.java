@@ -19,13 +19,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID productId;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", length = 200, nullable = false)
     private String productName;
 
-    @Column(name = "description", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "description", length = 2000, columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    @Column(name = "image_src", columnDefinition = "TEXT")
+    @Column(name = "image_src", length = 1000, columnDefinition = "TEXT")
     private String imageSrc;
 
     @Enumerated(EnumType.STRING)

@@ -2,6 +2,10 @@ package ru.yandex.practicum.service;
 
 import java.util.List;
 import java.util.UUID;
+
+import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import ru.yandex.practicum.dto.store.ProductDto;
 import ru.yandex.practicum.dto.store.ProductCategory;
@@ -9,15 +13,15 @@ import ru.yandex.practicum.dto.store.SetProductQuantityStateRequest;
 
 public interface ProductService {
 
-    List<ProductDto> getProducts(ProductCategory category, Pageable pageable);
+    List<ProductDto> getProducts(@Nullable ProductCategory category, Pageable pageable);
 
-    ProductDto getProductById(UUID productId);
+    ProductDto getProductById(@NotNull UUID productId);
 
-    ProductDto createNewProduct(ProductDto productDto);
+    ProductDto createNewProduct(@Valid @NotNull ProductDto productDto);
 
-    ProductDto updateProduct(ProductDto productDto);
+    ProductDto updateProduct(@Valid @NotNull ProductDto productDto);
 
-    boolean removeProductFromStore(UUID productId);
+    boolean removeProductFromStore(@NotNull UUID productId);
 
-    boolean setQuantityState(SetProductQuantityStateRequest request);
+    boolean setQuantityState(@Valid @NotNull SetProductQuantityStateRequest request);
 }

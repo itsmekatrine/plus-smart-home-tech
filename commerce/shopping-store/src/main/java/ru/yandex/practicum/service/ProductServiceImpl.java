@@ -1,7 +1,5 @@
 package ru.yandex.practicum.service;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,18 +41,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto getProductById(@NotNull UUID productId) {
+    public ProductDto getProductById(UUID productId) {
         return mapper.toDto(findProductById(productId));
     }
 
     @Override
-    public ProductDto createNewProduct(@Valid @NotNull ProductDto productDto) {
+    public ProductDto createNewProduct(ProductDto productDto) {
         Product product = mapper.toEntity(productDto);
         return mapper.toDto(repository.save(product));
     }
 
     @Override
-    public ProductDto updateProduct(@Valid @NotNull ProductDto productDto) {
+    public ProductDto updateProduct(ProductDto productDto) {
         findProductById(productDto.getProductId());
         return mapper.toDto(repository.save(mapper.toEntity(productDto)));
     }
@@ -71,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean removeProductFromStore(@NotNull UUID productId) {
+    public boolean removeProductFromStore(UUID productId) {
         Product product = findProductById(productId);
 
         if (product.getProductState() == ProductState.DEACTIVATE) {

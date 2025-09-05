@@ -1,5 +1,6 @@
 package ru.yandex.practicum.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -26,27 +27,32 @@ public class ProductController implements StoreClient {
     }
 
     @Override
+    @GetMapping("/{productId}")
     public ProductDto getProduct(@PathVariable UUID productId) {
         return service.getProductById(productId);
     }
 
     @Override
-    public ProductDto createNewProduct(@RequestBody ProductDto productDto) {
+    @PutMapping
+    public ProductDto createNewProduct(@RequestBody @Valid ProductDto productDto) {
         return service.createNewProduct(productDto);
     }
 
     @Override
-    public ProductDto updateProduct(@RequestBody ProductDto productDto) {
+    @PostMapping
+    public ProductDto updateProduct(@RequestBody @Valid ProductDto productDto) {
         return service.updateProduct(productDto);
     }
 
     @Override
-    public boolean removeProductFromStore(UUID productId) {
+    @PostMapping("/removeProductFromStore")
+    public boolean removeProductFromStore(@RequestBody UUID productId) {
         return service.removeProductFromStore(productId);
     }
 
     @Override
-    public boolean setProductQuantityState(SetProductQuantityStateRequest request) {
+    @PostMapping("/setProductQuantityState")
+    public boolean setProductQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request) {
         return service.setQuantityState(request);
     }
 }

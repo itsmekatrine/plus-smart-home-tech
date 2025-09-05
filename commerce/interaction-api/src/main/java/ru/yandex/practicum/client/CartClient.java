@@ -1,7 +1,5 @@
 package ru.yandex.practicum.client;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.cart.CartDto;
