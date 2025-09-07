@@ -20,7 +20,6 @@ import ru.yandex.practicum.repository.ProductRepository;
 import java.util.UUID;
 
 @Service
-@Transactional
 @Validated
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {

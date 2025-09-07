@@ -23,7 +23,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @Validated
 @RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
