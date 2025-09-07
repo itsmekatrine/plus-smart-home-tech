@@ -21,7 +21,6 @@ import java.util.UUID;
 
 @Service
 @Validated
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
