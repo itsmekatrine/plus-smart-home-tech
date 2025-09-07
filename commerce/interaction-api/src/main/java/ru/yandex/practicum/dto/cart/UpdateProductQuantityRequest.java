@@ -1,21 +1,21 @@
 package ru.yandex.practicum.dto.cart;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.UUID;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateProductQuantityRequest {
     @NotNull
-    private UUID productId;
+    UUID productId;
 
     @NotNull
-    private Long newQuantity;
+    Long newQuantity;
 }

@@ -1,22 +1,22 @@
 package ru.yandex.practicum.dto.warehouse;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderDto {
     @NotNull
-    private Double deliveryWeight;
+    Double deliveryWeight;
 
     @NotNull
-    private Double deliveryVolume;
+    Double deliveryVolume;
 
     @NotNull
-    private Boolean fragile;
+    Boolean fragile;
 }

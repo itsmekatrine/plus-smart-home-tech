@@ -3,37 +3,38 @@ package ru.yandex.practicum.dto.store;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDto {
-    private UUID productId;
+    UUID productId;
 
     @NotBlank
-    private String productName;
+    String productName;
 
     @NotBlank
-    private String description;
+    String description;
 
-    private String imageSrc;
-
-    @NotNull
-    private QuantityState quantityState;
+    String imageSrc;
 
     @NotNull
-    private ProductState productState;
+    QuantityState quantityState;
 
-    private ProductCategory productCategory;
+    @NotNull
+    ProductState productState;
+
+    ProductCategory productCategory;
 
     @NotNull
     @Min(value = 1)
-    private Double price;
+    BigDecimal price;
 }
