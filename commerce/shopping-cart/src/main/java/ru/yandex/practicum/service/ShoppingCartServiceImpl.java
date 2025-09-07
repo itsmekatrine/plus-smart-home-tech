@@ -60,6 +60,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public void deleteShoppingCart(String username) {
         repository.deleteByUsername(username);
     }
