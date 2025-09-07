@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
                 : PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("productName"));
 
         return repository
-                .findAllByProductCategoryAndProductState(category, ProductState.ACTIVE, p)
+                .findAllByProductCategory(category, p)
                 .map(mapper::toDto);
     }
 
