@@ -4,6 +4,7 @@ import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.CartClient;
+import ru.yandex.practicum.client.DeliveryClient;
 import ru.yandex.practicum.client.WarehouseClient;
 import ru.yandex.practicum.dto.order.CreateOrderRequest;
 import ru.yandex.practicum.dto.order.OrderDto;
@@ -25,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper mapper;
     private final WarehouseClient warehouseClient;
     private final CartClient cartClient;
+    private final DeliveryClient deliveryClient;
 
 
     @Override
