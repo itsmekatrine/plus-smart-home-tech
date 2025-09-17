@@ -8,7 +8,7 @@ import ru.yandex.practicum.dto.cart.CartDto;
 import ru.yandex.practicum.dto.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.warehouse.AddressDto;
 import ru.yandex.practicum.dto.warehouse.NewProductInWarehouseRequest;
-import ru.yandex.practicum.dto.warehouse.OrderDto;
+import ru.yandex.practicum.dto.warehouse.DataOrderDto;
 import ru.yandex.practicum.service.WarehouseService;
 
 @RestController
@@ -25,7 +25,7 @@ public class WarehouseController implements WarehouseClient {
 
     @Override
     @PostMapping("/check")
-    public OrderDto checkProductQuantity(@RequestBody @Valid CartDto shoppingCart) {
+    public DataOrderDto checkProductQuantity(@RequestBody @Valid CartDto shoppingCart) {
         return service.checkProductQuantity(shoppingCart);
     }
 

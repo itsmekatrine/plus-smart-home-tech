@@ -6,7 +6,7 @@ import ru.yandex.practicum.dto.cart.CartDto;
 import ru.yandex.practicum.dto.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.warehouse.AddressDto;
 import ru.yandex.practicum.dto.warehouse.NewProductInWarehouseRequest;
-import ru.yandex.practicum.dto.warehouse.OrderDto;
+import ru.yandex.practicum.dto.warehouse.DataOrderDto;
 
 public interface WarehouseService {
 
@@ -14,7 +14,7 @@ public interface WarehouseService {
 
     void addProductToWarehouse(@Valid @NotNull AddProductToWarehouseRequest request);
 
-    OrderDto checkProductQuantity(@Valid @NotNull CartDto shoppingCart);
+    DataOrderDto checkProductQuantity(@Valid @NotNull CartDto shoppingCart);
 
     AddressDto getWarehouseAddress();
 }

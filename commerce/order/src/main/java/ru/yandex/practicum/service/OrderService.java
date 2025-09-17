@@ -13,7 +13,7 @@ public interface OrderService {
 
     OrderDto createNewOrder(CreateOrderRequest request);
 
-    OrderDto returnProduct(ProductReturnRequest request);
+    OrderDto returnProducts(ProductReturnRequest request);
 
     OrderDto payForOrder(UUID orderId);
 

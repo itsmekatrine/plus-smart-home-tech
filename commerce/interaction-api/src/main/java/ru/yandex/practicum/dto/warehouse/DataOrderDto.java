@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDto {
+public class DataOrderDto {
     @NotNull
     Double deliveryWeight;
 

@@ -2,13 +2,12 @@ package ru.yandex.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.dto.cart.CartDto;
 import ru.yandex.practicum.dto.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.warehouse.AddressDto;
 import ru.yandex.practicum.dto.warehouse.NewProductInWarehouseRequest;
-import ru.yandex.practicum.dto.warehouse.OrderDto;
+import ru.yandex.practicum.dto.warehouse.DataOrderDto;
 import ru.yandex.practicum.exception.AlreadyExistsException;
 import ru.yandex.practicum.exception.NotEnoughProductsInWarehouseException;
 import ru.yandex.practicum.exception.NotFoundException;
@@ -51,9 +50,9 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public OrderDto checkProductQuantity(CartDto shoppingCart) {
+    public DataOrderDto checkProductQuantity(CartDto shoppingCart) {
         if (shoppingCart == null || shoppingCart.getProducts() == null || shoppingCart.getProducts().isEmpty()) {
-            return new OrderDto(0.0, 0.0, false);
+            return new DataOrderDto(0.0, 0.0, false);
         }
 
         Map<UUID, Long> cartProducts = shoppingCart.getProducts();
@@ -114,7 +113,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             throw new NotEnoughProductsInWarehouseException(sb.toString());
         }
 
-        return new OrderDto(
+        return new DataOrderDto(
                 totalWeight,
                 totalVolume,
                 fragile

@@ -1,8 +1,10 @@
 package ru.yandex.practicum.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.client.OrderClient;
 import ru.yandex.practicum.dto.order.CreateOrderRequest;
@@ -16,74 +18,85 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/order")
 @RequiredArgsConstructor
+@Validated
 public class OrderController implements OrderClient {
     private final OrderService service;
 
     @Override
     @GetMapping
-    public List<OrderDto> getClientOrders(@RequestParam String username) {
+    public List<OrderDto> getClientOrders(@RequestParam("username") @NotBlank String username) {
         return service.getClientOrders(username);
     }
 
     @Override
     @PutMapping
-    public OrderDto createNewOrder(@RequestBody @Valid CreateOrderRequest request) {
+    public OrderDto createNewOrder(@Valid @RequestBody CreateOrderRequest request) {
         return service.createNewOrder(request);
     }
 
-    @Override @PostMapping("/return")
-    public OrderDto returnProducts(@RequestBody @Valid ProductReturnRequest request) {
+    @Override
+    @PostMapping("/return")
+    public OrderDto returnProducts(@Valid @RequestBody ProductReturnRequest request) {
         return service.returnProducts(request);
     }
 
-    @Override @PostMapping("/payment")
+    @Override
+    @PostMapping("/payment")
     public OrderDto payOrder(@RequestBody @NotNull UUID orderId) {
-        return service.payOrder(orderId);
+        return service.payForOrder(orderId);
     }
 
-    @Override @PostMapping("/payment/failed")
+    @Override
+    @PostMapping("/payment/failed")
     public OrderDto failPayOrder(@RequestBody @NotNull UUID orderId) {
-        return service.failPayOrder(orderId);
+        return service.setFailedPayment(orderId);
     }
 
-    @Override @PostMapping("/payment/success")
+    @Override
+    @PostMapping("/payment/success")
     public OrderDto successPayOrder(@RequestBody @NotNull UUID orderId) {
-        return service.successPayOrder(orderId);
+        return service.payForOrder(orderId);
     }
 
-    @Override @PostMapping("/delivery")
+    @Override
+    @PostMapping("/delivery")
     public OrderDto deliverOrder(@RequestBody @NotNull UUID orderId) {
-        return service.deliverOrder(orderId);
+        return service.setDeliverySuccess(orderId);
     }
 
-    @Override @PostMapping("/delivery/failed")
+    @Override
+    @PostMapping("/delivery/failed")
     public OrderDto failDeliverOrder(@RequestBody @NotNull UUID orderId) {
-        return service.failDeliverOrder(orderId);
+        return service.setDeliveryFailed(orderId);
     }
 
-    @Override @PostMapping("/completed")
+    @Override
+    @PostMapping("/completed")
     public OrderDto completeOrder(@RequestBody @NotNull UUID orderId) {
-        return service.completeOrder(orderId);
+        return service.setOrderComplete(orderId);
     }
 
-    @Override @PostMapping("/calculate/total")
+    @Override
+    @PostMapping("/calculate/total")
     public OrderDto calculateTotalPrice(@RequestBody @NotNull UUID orderId) {
-        return service.calculateTotalPrice(orderId);
+        return service.calculateTotalCost(orderId);
     }
 
-    @Override @PostMapping("/calculate/delivery")
+    @Override
+    @PostMapping("/calculate/delivery")
     public OrderDto calculateDeliveryPrice(@RequestBody @NotNull UUID orderId) {
-        return service.calculateDeliveryPrice(orderId);
+        return service.calculateDeliveryCost(orderId);
     }
 
-    @Override @PostMapping("/assembly")
+    @Override
+    @PostMapping("/assembly")
     public OrderDto assemblyOrder(@RequestBody @NotNull UUID orderId) {
-        return service.assemblyOrder(orderId);
+        return service.assembleOrder(orderId);
     }
 
-    @Override @PostMapping("/assembly/failed")
+    @Override
+    @PostMapping("/assembly/failed")
     public OrderDto failAssemblyOrder(@RequestBody @NotNull UUID orderId) {
-        return service.failAssemblyOrder(orderId);
+        return service.setAssemblyFailed(orderId);
     }
-}
 }

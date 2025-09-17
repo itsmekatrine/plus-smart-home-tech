@@ -10,7 +10,7 @@ import ru.yandex.practicum.dto.cart.CartDto;
 import ru.yandex.practicum.dto.warehouse.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.warehouse.AddressDto;
 import ru.yandex.practicum.dto.warehouse.NewProductInWarehouseRequest;
-import ru.yandex.practicum.dto.warehouse.OrderDto;
+import ru.yandex.practicum.dto.warehouse.DataOrderDto;
 
 @FeignClient(name = "warehouse", path = "/api/v1/warehouse")
 public interface WarehouseClient {
@@ -19,7 +19,7 @@ public interface WarehouseClient {
     void newProductInWarehouse(@RequestBody @Valid NewProductInWarehouseRequest request);
 
     @PostMapping("/check")
-    OrderDto checkProductQuantity(@RequestBody CartDto shoppingCard);
+    DataOrderDto checkProductQuantity(@RequestBody CartDto shoppingCard);
 
     @PostMapping("/add")
     void addProductToWarehouse(@RequestBody @Valid AddProductToWarehouseRequest request);

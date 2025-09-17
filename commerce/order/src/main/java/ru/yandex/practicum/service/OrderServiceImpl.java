@@ -5,17 +5,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.CartClient;
 import ru.yandex.practicum.client.DeliveryClient;
+import ru.yandex.practicum.client.PaymentClient;
 import ru.yandex.practicum.client.WarehouseClient;
+import ru.yandex.practicum.dto.delivery.DeliveryDto;
+import ru.yandex.practicum.dto.delivery.DeliveryState;
 import ru.yandex.practicum.dto.order.CreateOrderRequest;
 import ru.yandex.practicum.dto.order.OrderDto;
 import ru.yandex.practicum.dto.order.OrderState;
 import ru.yandex.practicum.dto.order.ProductReturnRequest;
+import ru.yandex.practicum.dto.warehouse.AddressDto;
+import ru.yandex.practicum.dto.warehouse.DataOrderDto;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.mapper.OrderMapper;
 import ru.yandex.practicum.model.Order;
 import ru.yandex.practicum.repository.OrderRepository;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final WarehouseClient warehouseClient;
     private final CartClient cartClient;
     private final DeliveryClient deliveryClient;
-
+    private final PaymentClient paymentClient;
 
     @Override
     public List<OrderDto> getClientOrders(String username) {
@@ -39,21 +43,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto createNewOrder(CreateOrderRequest request) {
-        Order order = new Order();
-        order.setShoppingCartId(request.getShoppingCart().getShoppingCartId());
-        order.setProducts(new HashMap<>(request.getShoppingCart().getProducts()));
-        order.setState(OrderState.NEW);
+        DataOrderDto orderData = warehouseClient.checkProductQuantity(request.getShoppingCart());
 
-        order.setDeliveryWeight(request.getDeliveryWeight());
-        order.setDeliveryVolume(request.getDeliveryVolume());
-        order.setFragile(Boolean.TRUE.equals(request.getFragile()));
+        Order order = repository.save(mapper.createRequestToOrder(request, orderData));
 
-        Order saved = repository.save(order);
-        return mapper.toDto(saved);
+        DeliveryDto delivery = deliveryClient.planDelivery(
+                buildDeliveryRequest(order.getOrderId(), request.getDeliveryAddress())
+        );
+        order.setDeliveryId(delivery.getDeliveryId());
+
+        return mapper.toDto(repository.save(order));
     }
 
     @Override
-    public OrderDto returnProduct(ProductReturnRequest request) {
+    public OrderDto returnProducts(ProductReturnRequest request) {
         Order order = findOrderById(orderIdOrThrow(request));
 
         request.getProducts().forEach((pid, qty) -> {
@@ -96,14 +99,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto calculateTotalCost(UUID orderId) {
         Order order = findOrderById(orderId);
-        order.setTotalPrice(paymentFeign.getTotalCost(mapper.toDto(order)));
+        order.setTotalPrice(paymentClient.getTotalCost(mapper.toDto(order)));
         return mapper.toDto(repository.save(order));
     }
 
     @Override
     public OrderDto calculateDeliveryCost(UUID orderId) {
         Order order = findOrderById(orderId);
-        order.setDeliveryPrice(deliveryFeign.deliveryCost(mapper.toDto(order)));
+        order.setDeliveryPrice(deliveryClient.deliveryCost(mapper.toDto(order)));
         return mapper.toDto(repository.save(order));
     }
 
@@ -130,9 +133,17 @@ public class OrderServiceImpl implements OrderService {
 
     private static UUID orderIdOrThrow(ProductReturnRequest r) {
         if (r.getOrderId() == null) {
-            throw new BadRequestException("orderId обязателен");
+            throw new BadRequestException("The orderId is required");
         }
         return r.getOrderId();
     }
 
+    private DeliveryDto buildDeliveryRequest(UUID orderId, AddressDto toAddress) {
+        return DeliveryDto.builder()
+                .fromAddress(warehouseClient.getWarehouseAddress())
+                .toAddress(toAddress)
+                .orderId(orderId)
+                .deliveryState(DeliveryState.CREATED)
+                .build();
+    }
 }
