@@ -4,16 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.dto.cart.CartDto;
-import ru.yandex.practicum.dto.warehouse.AddProductToWarehouseRequest;
-import ru.yandex.practicum.dto.warehouse.AddressDto;
-import ru.yandex.practicum.dto.warehouse.NewProductInWarehouseRequest;
-import ru.yandex.practicum.dto.warehouse.DataOrderDto;
+import ru.yandex.practicum.dto.warehouse.*;
 import ru.yandex.practicum.exception.AlreadyExistsException;
 import ru.yandex.practicum.exception.NotEnoughProductsInWarehouseException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.mapper.WarehouseMapper;
 import ru.yandex.practicum.model.Dimension;
+import ru.yandex.practicum.model.OrderBooking;
 import ru.yandex.practicum.model.WarehouseProduct;
+import ru.yandex.practicum.repository.OrderBookingRepository;
 import ru.yandex.practicum.repository.WarehouseRepository;
 
 import java.security.SecureRandom;
@@ -27,6 +26,7 @@ import java.util.stream.Collectors;
 public class WarehouseServiceImpl implements WarehouseService {
     private final WarehouseRepository repository;
     private final WarehouseMapper mapper;
+    private final OrderBookingRepository orderBookingRepository;
 
     private static final String[] ADDRESSES =
             new String[] {"ADDRESS_1", "ADDRESS_2"};
@@ -40,6 +40,18 @@ public class WarehouseServiceImpl implements WarehouseService {
             throw new AlreadyExistsException("Product `%s` already exists in warehouse".formatted(request.getProductId()));
         }
         repository.save(mapper.newProductRequestToEntity(request));
+    }
+
+    @Override
+    public void shipToDelivery(ShipToDeliveryRequest request) {
+        OrderBooking orderBooking = findOrderBookingById(request.getOrderId());
+        orderBooking.setDeliveryId(request.getDeliveryId());
+        orderBookingRepository.save(orderBooking);
+    }
+
+    @Override
+    public void acceptReturn(Map<UUID, Long> returnedProducts) {
+        increaseProductQuantity(returnedProducts);
     }
 
     @Override
@@ -121,6 +133,23 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    public DataOrderDto assemblyProductsForOrder(AssemblyProductsForOrderRequest request) {
+        CartDto shoppingCart = CartDto.builder()
+                .shoppingCartId(request.getOrderId())
+                .products(request.getProducts())
+                .build();
+        DataOrderDto order = checkProductQuantity(shoppingCart);
+
+        OrderBooking orderBooking = new OrderBooking();
+        orderBooking.setOrderId(request.getOrderId());
+        orderBooking.setProducts(request.getProducts());
+        orderBookingRepository.save(orderBooking);
+
+        decreaseProductQuantity(request.getProducts());
+        return order;
+    }
+
+    @Override
     public AddressDto getWarehouseAddress() {
         String address = CURRENT_ADDRESS;
         return AddressDto.builder()
@@ -135,5 +164,40 @@ public class WarehouseServiceImpl implements WarehouseService {
     private WarehouseProduct findProductById(UUID productId) {
         return repository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Product with id `%s` not found".formatted(productId)));
+    }
+
+    private OrderBooking findOrderBookingById(UUID orderId) {
+        return orderBookingRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Order with id `%s` not found".formatted(orderId)));
+    }
+
+    private void increaseProductQuantity(Map<UUID, Long> returnedProducts) {
+        Map<UUID, WarehouseProduct> products = repository.findAllById(returnedProducts.keySet()).stream()
+                .collect(Collectors.toMap(WarehouseProduct::getProductId, Function.identity()));
+
+        for (Map.Entry<UUID, Long> entry : returnedProducts.entrySet()) {
+            if (products.containsKey(entry.getKey())) {
+                WarehouseProduct product = products.get(entry.getKey());
+                product.setQuantity(product.getQuantity() + entry.getValue());
+            }
+        }
+        repository.saveAll(products.values());
+    }
+
+    private void decreaseProductQuantity(Map<UUID, Long> orderedProducts) {
+        Map<UUID, WarehouseProduct> products = repository.findAllById(orderedProducts.keySet()).stream()
+                .collect(Collectors.toMap(WarehouseProduct::getProductId, Function.identity()));
+
+        for (Map.Entry<UUID, Long> entry : orderedProducts.entrySet()) {
+            if (products.containsKey(entry.getKey())) {
+                WarehouseProduct product = products.get(entry.getKey());
+                if (product.getQuantity() < entry.getValue()) {
+                    throw new NotEnoughProductsInWarehouseException(
+                            "Product `%s` quantity is not enough".formatted(product.getProductId()));
+                }
+                product.setQuantity(product.getQuantity() - entry.getValue());
+            }
+        }
+        repository.saveAll(products.values());
     }
 }
