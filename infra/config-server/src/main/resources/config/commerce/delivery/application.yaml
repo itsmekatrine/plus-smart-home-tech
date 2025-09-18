@@ -11,15 +11,25 @@ spring:
         format_sql: true
   sql:
     init:
-      mode: never
+      mode: always
   output:
     ansi:
       enabled: ALWAYS
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6435/warehouse
-    username: warehouse
-    password: warehouse
+    url: jdbc:postgresql://localhost:6438/delivery
+    username: delivery
+    password: delivery
+
+delivery:
+  cost:
+    base: 5.0
+    address1: 1.0
+    address2: 2.0
+    fragile: 0.2
+    weight: 0.3
+    volume: 0.2
+    street: 0.2
 
 logging:
   level:

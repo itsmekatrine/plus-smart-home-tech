@@ -1,10 +1,10 @@
-package ru.yandex.practicum.dto.cart;
+package ru.yandex.practicum.dto.payment;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Map;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -12,12 +12,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CartDto {
+public class PaymentResponseDto {
     @NotNull
-    UUID shoppingCartId;
-
-    @NotNull
-    Map<UUID, Long> products;
+    private UUID paymentId;
+    private BigDecimal totalPayment;
+    private BigDecimal deliveryTotal;
+    private BigDecimal feeTotal;
 }

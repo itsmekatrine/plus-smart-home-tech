@@ -4,19 +4,18 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDto {
+public class ShipToDeliveryRequest {
     @NotNull
-    Double deliveryWeight;
+    UUID orderId;
 
     @NotNull
-    Double deliveryVolume;
-
-    @NotNull
-    Boolean fragile;
+    UUID deliveryId;
 }

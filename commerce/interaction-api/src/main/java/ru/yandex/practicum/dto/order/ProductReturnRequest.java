@@ -1,5 +1,6 @@
-package ru.yandex.practicum.dto.cart;
+package ru.yandex.practicum.dto.order;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,12 +13,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CartDto {
+public class ProductReturnRequest {
     @NotNull
-    UUID shoppingCartId;
+    UUID orderId;
 
     @NotNull
+    @NotEmpty
     Map<UUID, Long> products;
 }

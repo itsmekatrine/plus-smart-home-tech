@@ -1,29 +1,32 @@
-package ru.yandex.practicum.dto.warehouse;
+package ru.yandex.practicum.dto.delivery;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.yandex.practicum.dto.warehouse.AddressDto;
+
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @ToString
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddressDto {
+public class DeliveryDto {
     @NotNull
-    String country;
+    UUID deliveryId;
 
     @NotNull
-    String city;
+    AddressDto fromAddress;
 
     @NotNull
-    String street;
+    AddressDto toAddress;
 
     @NotNull
-    String house;
+    UUID orderId;
 
     @NotNull
-    String flat;
+    DeliveryState deliveryState;
 }

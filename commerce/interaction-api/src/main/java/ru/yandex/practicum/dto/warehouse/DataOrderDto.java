@@ -1,23 +1,22 @@
-package ru.yandex.practicum.dto.cart;
+package ru.yandex.practicum.dto.warehouse;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Map;
-import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CartDto {
+public class DataOrderDto {
     @NotNull
-    UUID shoppingCartId;
+    Double deliveryWeight;
 
     @NotNull
-    Map<UUID, Long> products;
+    Double deliveryVolume;
+
+    @NotNull
+    Boolean fragile;
 }
