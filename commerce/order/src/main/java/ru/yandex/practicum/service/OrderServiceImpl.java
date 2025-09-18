@@ -35,7 +35,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getClientOrders(String username) {
-        return repository.findAllByUserName(username)
+        UUID cartId = cartClient.getShoppingCart(username).getShoppingCartId();
+        return repository.findAllByShoppingCartId(cartId)
                 .stream()
                 .map(mapper::toDto)
                 .toList();
