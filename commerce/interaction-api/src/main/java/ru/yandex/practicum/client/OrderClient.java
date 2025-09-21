@@ -1,5 +1,6 @@
 package ru.yandex.practicum.client;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,10 +18,10 @@ public interface OrderClient {
     List<OrderDto> getClientOrders(@RequestParam(name = "username") @NotBlank String userName);
 
     @PutMapping
-    OrderDto createNewOrder(@RequestBody CreateOrderRequest request);
+    OrderDto createNewOrder(@Valid @RequestBody CreateOrderRequest request);
 
     @PostMapping("/return")
-    OrderDto returnProducts(@RequestBody ProductReturnRequest request);
+    OrderDto returnProducts(@Valid @RequestBody ProductReturnRequest request);
 
     @PostMapping("/payment")
     OrderDto payOrder(@RequestBody @NotNull UUID orderId);
